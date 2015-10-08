@@ -203,12 +203,6 @@ def four_sum?(arr, sum)
   answer
 end
 
-# changing value of arr
-
-
-
-
-
 # naive solution
 def max_windowed_range(arr, w)
   max_window_range = nil
