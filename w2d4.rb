@@ -139,17 +139,33 @@ def hash_two_sum?(arr, sum)
   false
 end
 
-# TODO
 def four_sum?(arr, sum)
-  hash = Hash.new { |h, k| h[k] = 0 }
+  possible_sums_of_pairs = Hash.new { |h, k| h[k] = 0 }
+  pairs_of_sums = Hash.new { |h, k| h[k] = [] }
+  freq_of_each_num = Hash.new { |h, k| h[k] = 0 }
 
-  # populate hash with num and its freq
-  arr.each do |num|
-    hash[num] += 1
+  return false if arr.length < 4
+
+  # populate possible_sums_of_pairs
+  arr.each_with_index do |num, i|
+    arr[((i + 1)...arr.length)].each do |num2|
+      sum = num + num2
+      possible_sums_of_pairs[sum] += 1
+      pairs_of_sums[sum] << num << num2
+      freq_of_each_num[num] += 1
+      freq_of_each_num[num2] += 1
+    end
   end
 
+  # find two_sum for possible_sums_of_pairs
+  possible_sums_of_pairs.each do |num, val|
+    pair_value = sum - num
+    possible_sums_of_pairs[num] -= 1
+    return true if hash[pair_value] > 0
+    possible_sums_of_pairs[num] += 1
+  end
 
-
+  false
 end
 
 # naive solution
