@@ -1,17 +1,5 @@
 require 'benchmark'
 
-
-
-def my_min(list)
-  smallest_num = nil
-  list.each do |num|
-    smallest_num = num if smallest_num.nil? || num < smallest_num
-  end
-
-  smallest_num
-end
-# time-complexity = O(N)
-
 def largest_contiguous_subsum(list)
   current_sum = 0
   max_sum = 0
@@ -33,11 +21,45 @@ def first_anagram?(word)
     a += word1[i]
     a += word1[0...i]
     a += word1[i + 1...word1.length]
-    anagrams << a
+    word = a
+    anagrams << word
     a = ""
   end
 
   anagrams
+end
+
+def permuteString(start_string, end_string)
+  if end_string.length <= 1
+    p start_string + end_string
+    return
+  end
+  end_string.split('').each_with_index do |c, i|
+    new_string = end_string[0,i] + end_string[i + 1] if !end_string.nil? && end_string.length > 1
+    permuteString(start_string + end_string[i], new_string)
+  end
+
+
+end
+
+def second_anagram?(word1, word2)
+  word1_arr = word1.split('')
+  word2_arr = word2.split('')
+  no_letter_deleted = true
+
+  while no_letter_deleted
+    no_letter_deleted = false
+
+    word1_arr.each do |char|
+      if word2_arr.index(char)
+        word1_arr.delete(char)
+        word2_arr.delete(char)
+        no_letter_deleted = true
+      end
+    end
+  end
+
+  word1_arr.empty? && word2_arr.empty?
 end
 
 def third_anagram?(word1, word2)
@@ -275,7 +297,7 @@ class MinMaxStackQueue
         @out.push(@in.pop)
       end
     end
-    
+
     @out.pop
   end
 
