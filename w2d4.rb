@@ -139,34 +139,75 @@ def hash_two_sum?(arr, sum)
   false
 end
 
-def four_sum?(arr, sum)
-  possible_sums_of_pairs = Hash.new { |h, k| h[k] = 0 }
-  pairs_of_sums = Hash.new { |h, k| h[k] = [] }
-  freq_of_each_num = Hash.new { |h, k| h[k] = 0 }
+def index_hash_two_sum(arr, sum)
+  hash = Hash.new { |h, k| h[k] = [0] }
 
-  return false if arr.length < 4
-
-  # populate possible_sums_of_pairs
-  arr.each_with_index do |num, i|
-    arr[((i + 1)...arr.length)].each do |num2|
-      sum = num + num2
-      possible_sums_of_pairs[sum] += 1
-      pairs_of_sums[sum] << num << num2
-      freq_of_each_num[num] += 1
-      freq_of_each_num[num2] += 1
-    end
+  # populate hash with num and its freq
+  arr.each_with_index do |num, index|
+    hash[num][0] += 1
+    hash[num] << index
   end
 
-  # find two_sum for possible_sums_of_pairs
-  possible_sums_of_pairs.each do |num, val|
+  # search through the hash for the corresponding pair
+  arr.each do |num|
     pair_value = sum - num
-    possible_sums_of_pairs[num] -= 1
-    return true if hash[pair_value] > 0
-    possible_sums_of_pairs[num] += 1
+    hash[num][0] -= 1
+    index_of_first_pair = hash[num][1]
+    list = hash[num]
+    list[0...list.length].delete(index_of_first_pair)
+
+    if hash[pair_value][0] > 0
+      index_of_second_pair = hash[pair_value][1]
+      pair_indexes = []
+      pair_indexes << index_of_first_pair << index_of_second_pair
+      return pair_indexes
+    end
+
+    hash[num][0] += 1
+    hash[num] << index_of_first_pair
   end
 
   false
 end
+
+def possible_additives(sum)
+  possible_additives_arr = []
+  (0..sum/2).each do |i|
+    possible_additives_arr << [i, sum - i]
+  end
+
+  possible_additives_arr
+end
+
+# get possible additives
+# call index_hash_two_sum
+# call two_sum on the array without the two additives
+def four_sum?(arr, sum)
+  possible_additives = possible_additives(sum)
+  answer = false
+
+  possible_additives.each do |list|
+    num1, num2 = list
+    indices_to_remove = index_hash_two_sum(arr, num1)
+    if indices_to_remove != false
+      temp_arr = []
+      temp_arr += arr
+      indices_to_remove.each do |index|
+        temp_arr.delete_at(index)
+      end
+      p temp_arr
+      answer ||=hash_two_sum?(temp_arr, num2)
+    end
+  end
+
+  answer
+end
+
+# changing value of arr
+
+
+
+
 
 # naive solution
 def max_windowed_range(arr, w)
